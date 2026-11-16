@@ -1,0 +1,44 @@
+{
+  "title": "Sales Overview",
+  "layout": [
+    {
+      "reference_id": "tab-main",
+      "layout": [
+        {
+          "reference_id": "widget_revenue",
+          "position": {"x": 0, "y": 0, "width": 4, "height": 2}
+        },
+        {
+          "reference_id": "widget_deals",
+          "position": {"x": 4, "y": 0, "width": 4, "height": 2}
+        },
+        {
+          "reference_id": "widget_pipeline",
+          "position": {"x": 8, "y": 0, "width": 4, "height": 2}
+        }
+      ]
+    }
+  ],
+  "tabs": [
+    {
+      "reference_id": "tab-main",
+      "title": "Overview",
+      "description": "Key sales metrics at a glance"
+    }
+  ],
+  "widgets": [
+    {
+      "reference_id": "widget_revenue",
+      "widget": {"id": "don:data:dvrv-us-1:devo/DEV-abc123:widget/revenue-001"}
+    },
+    {
+      "reference_id": "widget_deals",
+      "widget": {"id": "don:data:dvrv-us-1:devo/DEV-abc123:widget/deals-001"}
+    },
+    {
+      "reference_id": "widget_pipeline",
+      "widget": {"id": "don:data:dvrv-us-1:devo/DEV-abc123:widget/pipeline-001"}
+    }
+  ],
+  "timezone": "Auto-detect"
+}

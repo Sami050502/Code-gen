@@ -1,0 +1,112 @@
+{
+  "version": "v0",
+  "name": "conversations-by-channel",
+  "title": "Conversations by Source Channel",
+  "description": "Distribution of conversations across different source channels",
+  "data_sources": [
+    {
+      "reference_name": "data",
+      "type": "oasis",
+      "oasis": {
+        "datasets": ["devrev.dim_conversation"],
+        "sql_query": "SELECT id, source_channel FROM devrev.dim_conversation"
+      },
+      "measures": [
+        {
+          "reference_name": "conversation_count",
+          "devrev_schema": {
+            "field_type": "int",
+            "data_name": "conversation_count",
+            "db_name": "conversation_count",
+            "is_filterable": false,
+            "name": "conversation_count",
+            "oasis": {
+              "name": "conversation_count"
+            },
+            "ui": {
+              "display_name": "Conversation Count"
+            }
+          },
+          "meerkat_schema": {
+            "sql_expression": "COUNT(DISTINCT id)",
+            "type": "number"
+          }
+        }
+      ],
+      "dimensions": [
+        {
+          "reference_name": "source_channel",
+          "devrev_schema": {
+            "field_type": "enum",
+            "allowed_values": ["chat", "email", "slack", "whatsapp"],
+            "data_name": "source_channel",
+            "db_name": "source_channel",
+            "is_filterable": true,
+            "name": "source_channel",
+            "oasis": {
+              "name": "source_channel"
+            },
+            "ui": {
+              "display_name": "Source Channel"
+            }
+          },
+          "meerkat_schema": {
+            "sql_expression": "source_channel",
+            "type": "string"
+          }
+        }
+      ]
+    }
+  ],
+  "sub_widgets": [
+    {
+      "reference_id": "conversations_by_source_channel",
+      "query": {
+        "measures": ["data.conversation_count"],
+        "dimensions": ["data.source_channel"]
+      },
+      "visualization": {
+        "type": "donut",
+        "donut": {
+          "x": [
+            {
+              "reference_name": "data.source_channel",
+              "label": "Source Channel",
+              "color": {
+                "type": "key_lookup",
+                "key_lookup": [
+                  {
+                    "key": "chat",
+                    "value": "chart-primary-base"
+                  },
+                  {
+                    "key": "email",
+                    "value": "chart-success-base"
+                  },
+                  {
+                    "key": "slack",
+                    "value": "chart-warning-base"
+                  },
+                  {
+                    "key": "whatsapp",
+                    "value": "chart-info-base"
+                  }
+                ]
+              }
+            }
+          ],
+          "y": {
+            "reference_name": "data.conversation_count",
+            "label": "Conversations"
+          }
+        }
+      }
+    }
+  ],
+  "layout": [
+    {
+      "reference_id": "conversations_by_source_channel",
+      "position": {"x": 0, "y": 0, "width": 6, "height": 4}
+    }
+  ]
+}

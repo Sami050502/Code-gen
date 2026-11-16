@@ -1,0 +1,9 @@
+{
+  "name": "snap-in-dev",
+  "version": "1.0.0",
+  "description": "DevRev Snap-in Development Plugin - Tools for creating and verifying snap-in projects",
+  "author": {
+    "name": "DevRev",
+    "email": "support@devrev.ai"
+  }
+}

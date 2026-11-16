@@ -1,0 +1,98 @@
+{
+  "data_sources": [
+    {
+      "reference_name": "data",
+      "type": "oasis",
+      "oasis": {
+        "datasets": [
+          "devrev.dim_account"
+        ],
+        "sql_query": "SELECT id, tier FROM devrev.dim_account"
+      },
+      "dimensions": [
+        {
+          "reference_name": "tier",
+          "devrev_schema": {
+            "field_type": "enum",
+            "allowed_values": [
+              "tier_1",
+              "tier_2",
+              "tier_3"
+            ],
+            "data_name": "tier",
+            "db_name": "tier",
+            "is_filterable": true,
+            "name": "tier",
+            "oasis": {
+              "name": "tier"
+            },
+            "ui": {
+              "display_name": "Tier"
+            }
+          },
+          "meerkat_schema": {
+            "sql_expression": "tier",
+            "type": "string"
+          }
+        }
+      ],
+      "measures": [
+        {
+          "reference_name": "account_count",
+          "devrev_schema": {
+            "field_type": "double",
+            "data_name": "account_count",
+            "db_name": "account_count",
+            "is_filterable": false,
+            "name": "account_count",
+            "oasis": {
+              "name": "account_count"
+            },
+            "ui": {
+              "display_name": "Account Count"
+            }
+          },
+          "meerkat_schema": {
+            "sql_expression": "count(distinct id)",
+            "type": "number"
+          }
+        }
+      ]
+    }
+  ],
+  "sub_widgets": [
+    {
+      "reference_id": "accounts_by_tier_chart",
+      "query": {
+        "dimensions": [
+          "data.tier"
+        ],
+        "measures": [
+          "data.account_count"
+        ]
+      },
+      "visualization": {
+        "type": "bar",
+        "bar": {
+          "is_stacked": false,
+          "x": [
+            {
+              "reference_name": "data.tier",
+              "label": "Tier"
+            }
+          ],
+          "y": [
+            {
+              "reference_name": "data.account_count",
+              "label": "Accounts"
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "title": "Accounts by Tier",
+  "description": "Bar chart showing account count grouped by tier",
+  "version": "v0",
+  "name": "accounts_by_tier"
+}

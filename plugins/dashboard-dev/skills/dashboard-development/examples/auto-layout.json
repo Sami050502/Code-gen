@@ -1,0 +1,41 @@
+{
+  "title": "Sprint Dashboard",
+  "layout": [
+    {
+      "reference_id": "tab-main",
+      "layout": [
+        {"reference_id": "widget_1", "position": {"x": 0, "y": 0, "width": 4, "height": 2}},
+        {"reference_id": "widget_2", "position": {"x": 4, "y": 0, "width": 4, "height": 2}},
+        {"reference_id": "widget_3", "position": {"x": 8, "y": 0, "width": 4, "height": 2}},
+        {"reference_id": "widget_4", "position": {"x": 0, "y": 2, "width": 4, "height": 2}},
+        {"reference_id": "widget_5", "position": {"x": 4, "y": 2, "width": 4, "height": 2}},
+        {"reference_id": "widget_6", "position": {"x": 8, "y": 2, "width": 4, "height": 2}},
+        {"reference_id": "widget_7", "position": {"x": 0, "y": 4, "width": 4, "height": 2}},
+        {"reference_id": "widget_8", "position": {"x": 4, "y": 4, "width": 4, "height": 2}}
+      ]
+    }
+  ],
+  "tabs": [
+    {
+      "reference_id": "tab-main",
+      "title": "Sprint Metrics",
+      "description": "Automatically laid out sprint metrics using 4-column grid"
+    }
+  ],
+  "widgets": [
+    {"reference_id": "widget_1", "widget": {"id": "don:data:dvrv-us-1:devo/DEV-abc123:widget/sprint-velocity"}},
+    {"reference_id": "widget_2", "widget": {"id": "don:data:dvrv-us-1:devo/DEV-abc123:widget/story-points"}},
+    {"reference_id": "widget_3", "widget": {"id": "don:data:dvrv-us-1:devo/DEV-abc123:widget/completion-rate"}},
+    {"reference_id": "widget_4", "widget": {"id": "don:data:dvrv-us-1:devo/DEV-abc123:widget/bug-count"}},
+    {"reference_id": "widget_5", "widget": {"id": "don:data:dvrv-us-1:devo/DEV-abc123:widget/blockers"}},
+    {"reference_id": "widget_6", "widget": {"id": "don:data:dvrv-us-1:devo/DEV-abc123:widget/team-capacity"}},
+    {"reference_id": "widget_7", "widget": {"id": "don:data:dvrv-us-1:devo/DEV-abc123:widget/burndown"}},
+    {"reference_id": "widget_8", "widget": {"id": "don:data:dvrv-us-1:devo/DEV-abc123:widget/cycle-time"}}
+  ],
+  "timezone": "Auto-detect",
+  "_notes": {
+    "layout_algorithm": "Auto-layout with 4-column grid (width=4, height=2)",
+    "positioning": "Left-to-right, wrapping at column 12",
+    "spacing": "3 widgets per row, uniform sizing"
+  }
+}

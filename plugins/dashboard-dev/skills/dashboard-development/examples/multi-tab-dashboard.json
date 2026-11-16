@@ -1,0 +1,94 @@
+{
+  "title": "Customer Success Dashboard",
+  "layout": [
+    {
+      "reference_id": "tab-overview",
+      "layout": [
+        {
+          "reference_id": "section-metrics",
+          "layout": [
+            {
+              "reference_id": "widget_nps",
+              "position": {"x": 0, "y": 0, "width": 4, "height": 2}
+            },
+            {
+              "reference_id": "widget_churn",
+              "position": {"x": 4, "y": 0, "width": 4, "height": 2}
+            },
+            {
+              "reference_id": "widget_engagement",
+              "position": {"x": 8, "y": 0, "width": 4, "height": 2}
+            }
+          ]
+        },
+        {
+          "reference_id": "section-trends",
+          "layout": [
+            {
+              "reference_id": "widget_trend_chart",
+              "position": {"x": 0, "y": 0, "width": 12, "height": 4}
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "reference_id": "tab-details",
+      "layout": [
+        {
+          "reference_id": "widget_customer_table",
+          "position": {"x": 0, "y": 0, "width": 12, "height": 6}
+        }
+      ]
+    },
+    {
+      "reference_id": "tab-health",
+      "layout": [
+        {
+          "reference_id": "widget_health_score",
+          "position": {"x": 0, "y": 0, "width": 6, "height": 4}
+        },
+        {
+          "reference_id": "widget_risk_analysis",
+          "position": {"x": 6, "y": 0, "width": 6, "height": 4}
+        },
+        {
+          "reference_id": "widget_activity_feed",
+          "position": {"x": 0, "y": 4, "width": 12, "height": 6}
+        }
+      ]
+    }
+  ],
+  "tabs": [
+    {
+      "reference_id": "tab-overview",
+      "title": "Overview",
+      "description": "High-level customer success metrics"
+    },
+    {
+      "reference_id": "tab-details",
+      "title": "Customer Details",
+      "description": "Detailed customer listing and information"
+    },
+    {
+      "reference_id": "tab-health",
+      "title": "Health Analysis",
+      "description": "Customer health scores and risk factors"
+    }
+  ],
+  "sections": [
+    {"reference_id": "section-metrics", "title": "Key Performance Indicators"},
+    {"reference_id": "section-trends", "title": "Trend Analysis"}
+  ],
+  "widgets": [
+    {"reference_id": "widget_nps", "widget": {"id": "don:data:dvrv-us-1:devo/DEV-abc123:widget/nps-score"}},
+    {"reference_id": "widget_churn", "widget": {"id": "don:data:dvrv-us-1:devo/DEV-abc123:widget/churn-rate"}},
+    {"reference_id": "widget_engagement", "widget": {"id": "don:data:dvrv-us-1:devo/DEV-abc123:widget/engagement-score"}},
+    {"reference_id": "widget_trend_chart", "widget": {"id": "don:data:dvrv-us-1:devo/DEV-abc123:widget/trend-line"}},
+    {"reference_id": "widget_customer_table", "widget": {"id": "don:data:dvrv-us-1:devo/DEV-abc123:widget/customer-list"}},
+    {"reference_id": "widget_health_score", "widget": {"id": "don:data:dvrv-us-1:devo/DEV-abc123:widget/health-gauge"}},
+    {"reference_id": "widget_risk_analysis", "widget": {"id": "don:data:dvrv-us-1:devo/DEV-abc123:widget/risk-breakdown"}},
+    {"reference_id": "widget_activity_feed", "widget": {"id": "don:data:dvrv-us-1:devo/DEV-abc123:widget/activity-log"}}
+  ],
+  "timezone": "Auto-detect"
+}

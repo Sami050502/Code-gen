@@ -1,0 +1,109 @@
+{
+  "title": "Weekly Article Views",
+  "description": "Total article views by week for the last 3 months",
+  "data_sources": [
+    {
+      "reference_name": "data",
+      "type": "oasis",
+      "oasis": {
+        "datasets": [
+          "devrev.article_view_events"
+        ],
+        "sql_query": "SELECT record_date, count(*) as view_count FROM devrev.article_view_events GROUP BY record_date"
+      },
+      "dimensions": [
+        {
+          "reference_name": "week_date",
+          "devrev_schema": {
+            "field_type": "timestamp",
+            "data_name": "record_date",
+            "db_name": "record_date",
+            "is_filterable": true,
+            "name": "record_date",
+            "oasis": {
+              "name": "record_date"
+            },
+            "ui": {
+              "display_name": "Week"
+            }
+          },
+          "meerkat_schema": {
+            "sql_expression": "DATE_TRUNC('week', record_date)",
+            "type": "time"
+          }
+        }
+      ],
+      "measures": [
+        {
+          "reference_name": "view_count",
+          "devrev_schema": {
+            "field_type": "double",
+            "data_name": "view_count",
+            "db_name": "view_count",
+            "is_filterable": false,
+            "name": "view_count",
+            "oasis": {
+              "name": "view_count"
+            },
+            "ui": {
+              "display_name": "View Count"
+            }
+          },
+          "meerkat_schema": {
+            "sql_expression": "count(*)",
+            "type": "number"
+          }
+        }
+      ]
+    }
+  ],
+  "sub_widgets": [
+    {
+      "reference_id": "weekly_views_chart",
+      "query": {
+        "dimensions": [
+          "data.week_date"
+        ],
+        "measures": [
+          "data.view_count"
+        ],
+        "order_by": [
+          {
+            "reference_name": "data.week_date",
+            "direction": "descending"
+          }
+        ]
+      },
+      "visualization": {
+        "type": "line",
+        "line": {
+          "x": [
+            {
+              "reference_name": "data.week_date",
+              "label": "Week"
+            }
+          ],
+          "y": [
+            {
+              "reference_name": "data.view_count",
+              "label": "View Count",
+              "is_spline": true
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "layout": [
+    {
+      "reference_id": "weekly_views_chart",
+      "position": {
+        "height": 2,
+        "width": 3,
+        "x": 0,
+        "y": 0
+      }
+    }
+  ],
+  "name": "weekly_article_views"
+}

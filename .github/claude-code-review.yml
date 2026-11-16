@@ -1,0 +1,111 @@
+name: Claude Code Review
+
+on:
+  workflow_call:
+  pull_request:
+    types: [opened, synchronize, ready_for_review]
+
+jobs:
+  claude-review:
+    if: |
+      github.event.pull_request.draft == false
+
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      pull-requests: write
+      issues: write
+      id-token: write
+      actions: read
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v6
+        with:
+          fetch-depth: 1
+
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v5
+        with:
+          role-to-assume: ${{ secrets.CLAUDE_AWS_ROLE_TO_ASSUME }}
+          aws-region: us-east-1
+
+      - name: Dismiss old Claude comments
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          # Get PR comments from "claude[bot]" and hide them as outdated
+          REPO="${{ github.repository }}"
+          PR_NUMBER="${{ github.event.pull_request.number }}"
+
+          # Get PR issue comments (not review comments)
+          gh api "repos/$REPO/issues/$PR_NUMBER/comments" --jq '.[] | select(.user.login == "claude[bot]") | .node_id' | while read -r comment_node_id; do
+            if [ -n "$comment_node_id" ]; then
+              echo "Hiding Claude's PR comment: $comment_node_id"
+              gh api graphql -f query='
+                mutation($id: ID!) {
+                  minimizeComment(input: {subjectId: $id, classifier: OUTDATED}) {
+                    minimizedComment {
+                      isMinimized
+                    }
+                  }
+                }' -f id="$comment_node_id"
+            fi
+          done
+
+      - name: Run Claude Code Review
+        id: claude-review
+        uses: anthropics/claude-code-action@v1
+        with:
+          use_bedrock: true
+          use_sticky_comment: true
+          prompt: |
+            REPO: ${{ github.repository }}
+            PR NUMBER: ${{ github.event.pull_request.number }}
+
+            ## TASK
+            Review this pull request for CRITICAL issues only. Your goal is to identify real bugs,
+            security vulnerabilities, or logic errors that would cause problems in production.
+
+            ## BEFORE REVIEWING
+            1. First, read ALL existing comments on this PR using `gh api repos/${{ github.repository }}/issues/${{ github.event.pull_request.number }}/comments`
+            2. Also read inline review comments using `gh api repos/${{ github.repository }}/pulls/${{ github.event.pull_request.number }}/comments`
+            3. Note any issues that reviewers have already discussed, dismissed, or marked as acceptable
+            4. Read parts of code surrounding the changes (not just the diff - if necessary, the calling functions as well) to understand the complete context
+
+            ## WHAT TO REPORT (only if you find actual issues)
+            - Bugs: Logic errors, null pointer issues, race conditions, infinite loops
+            - Security: Logging of PII or whole records instead of just the IDs
+            - Data issues: Data loss, incorrect state mutations
+            - API contract violations: Breaking changes to public interfaces
+
+            ## WHAT TO SKIP (do NOT report these)
+            - Issues already discussed or dismissed in existing PR comments
+            - Stylistic preferences (naming, formatting) unless they cause confusion
+            - Missing tests (the CI pipeline handles test coverage)
+            - Documentation suggestions
+            - Generic advice like "consider adding monitoring" or "plan for future changes"
+            - Dependency update warnings (handled by other tools)
+            - Generated files or auto-formatted code
+            - Suggestions to run commands (CI handles this)
+
+            ## FALSE POSITIVE PREVENTION
+            Before reporting an issue, verify:
+            1. Is this actually a bug, or just an unfamiliar pattern?
+            2. Could there be context in the full file that explains this?
+            3. Has another reviewer already addressed this?
+            4. Is this a project-specific convention documented in CLAUDE.md?
+
+            ## OUTPUT FORMAT
+            - If you find critical issues: List them concisely with file:line references
+            - If the PR looks good: Output only "LGTM" and nothing else
+            - Do NOT create sections like "Performance", "Security", "Code Quality" unless reporting a specific issue
+
+            Read the repository's CLAUDE.md for project-specific conventions before reviewing.
+
+            Use `gh pr comment` with your Bash tool to leave your review as a comment on the PR.
+
+          # See https://github.com/anthropics/claude-code-action/blob/main/docs/usage.md
+          # or https://docs.claude.com/en/docs/claude-code/cli-reference for available options
+          claude_args: |
+            --allowed-tools "Read,Grep,Glob,Bash(gh api:*),Bash(gh pr comment:*),Bash(gh pr diff:*),Bash(gh pr view:*),Bash(cat:*)"

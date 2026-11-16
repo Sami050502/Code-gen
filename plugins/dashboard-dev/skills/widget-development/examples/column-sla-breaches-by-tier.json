@@ -1,0 +1,145 @@
+{
+  "title": "SLA breaches by Customer tier",
+  "description": "Number of Tickets with SLA breaches for ticket owners.",
+  "version": "v0",
+  "data_sources": [
+    {
+      "dimensions": [
+        {
+          "devrev_schema": {
+            "data_name": "owned_by_id",
+            "db_name": "owned_by_id",
+            "field_type": "id",
+            "id_type": [
+              "dev_user",
+              "service_account"
+            ],
+            "is_filterable": true,
+            "name": "owned_by_id",
+            "oasis": {
+              "name": "owned_by_id"
+            },
+            "ui": {
+              "display_name": "Owner"
+            }
+          },
+          "meerkat_schema": {
+            "sql_expression": "owned_by_id",
+            "type": "string"
+          },
+          "reference_name": "owned_by_id"
+        },
+        {
+          "devrev_schema": {
+            "allowed_values": [],
+            "data_name": "customer_tier",
+            "db_name": "customer_tier",
+            "field_type": "enum",
+            "is_filterable": true,
+            "name": "customer_tier",
+            "oasis": {
+              "name": "customer_tier"
+            },
+            "ui": {
+              "display_name": "Customer Tier",
+              "filter_view": {
+                "is_hidden": true
+              }
+            }
+          },
+          "meerkat_schema": {
+            "sql_expression": "tier",
+            "type": "string"
+          },
+          "reference_name": "customer_tier"
+        }
+      ],
+      "measures": [
+        {
+          "devrev_schema": {
+            "data_name": "ticket_count",
+            "db_name": "ticket_count",
+            "field_type": "double",
+            "is_filterable": false,
+            "name": "ticket_count",
+            "oasis": {
+              "name": "ticket_count"
+            },
+            "ui": {
+              "display_name": "Ticket Count"
+            }
+          },
+          "meerkat_schema": {
+            "sql_expression": "(COUNT(DISTINCT CASE WHEN status = 'miss' THEN ticket_id END))",
+            "type": "number"
+          },
+          "reference_name": "ticket_count"
+        }
+      ],
+      "oasis": {
+        "datasets": [
+          "devrev.dim_ticket",
+          "devrev.dim_sla_tracker",
+          "devrev.dim_revo",
+          "devrev.dim_account"
+        ],
+        "sql_query": "SELECT dim_sla_tracker.id, dim_sla_tracker.status, dim_ticket.id AS ticket_id, dim_ticket.object_type as type, dim_ticket.state, dim_ticket.owned_by_ids, UNNEST(dim_ticket.owned_by_ids) as owned_by_id, dim_account.tier FROM devrev.dim_sla_tracker JOIN devrev.dim_ticket ON dim_sla_tracker.applies_to_id = dim_ticket.id LEFT JOIN devrev.dim_revo ON dim_ticket.rev_oid = dim_revo.id LEFT JOIN devrev.dim_account ON dim_revo.account = dim_account.id WHERE dim_sla_tracker.status == 'miss'"
+      },
+      "reference_name": "dim_ticket",
+      "type": "oasis"
+    }
+  ],
+  "sub_widgets": [
+    {
+      "query": {
+        "dimensions": [
+          "dim_ticket.owned_by_id",
+          "dim_ticket.customer_tier"
+        ],
+        "measures": [
+          "dim_ticket.ticket_count"
+        ],
+        "order_by": [
+          {
+            "direction": "descending",
+            "reference_name": "dim_ticket.ticket_count"
+          }
+        ]
+      },
+      "reference_id": "widget1",
+      "visualization": {
+        "column": {
+          "x": [
+            {
+              "label": "Owner",
+              "reference_name": "dim_ticket.owned_by_id"
+            },
+            {
+              "label": "Customer Tier",
+              "reference_name": "dim_ticket.customer_tier"
+            }
+          ],
+          "y": [
+            {
+              "label": "Ticket Count",
+              "reference_name": "dim_ticket.ticket_count"
+            }
+          ]
+        },
+        "type": "column"
+      }
+    }
+  ],
+  "layout": [
+    {
+      "position": {
+        "height": 2,
+        "width": 3,
+        "x": 0,
+        "y": 0
+      },
+      "reference_id": "widget1"
+    }
+  ],
+  "name": "sla_breaches_by_tier"
+}

@@ -1,0 +1,141 @@
+{
+  "title": "CSAT Score Distribution",
+  "description": "A distribution of customer satisfaction scores on your tickets.",
+  "version": "v0",
+  "data_sources": [
+    {
+      "dimensions": [
+        {
+          "devrev_schema": {
+            "allowed_values": [
+              "1",
+              "2",
+              "3",
+              "4",
+              "5"
+            ],
+            "data_name": "ticket_csat",
+            "db_name": "ticket_csat",
+            "field_type": "enum",
+            "is_filterable": true,
+            "name": "ticket_csat",
+            "oasis": {
+              "name": "ticket_csat"
+            },
+            "ui": {
+              "display_name": "CSAT Score",
+              "filter_view": {
+                "is_hidden": true
+              }
+            }
+          },
+          "meerkat_schema": {
+            "sql_expression": "CAST(CAST(FLOOR(CAST(JSON_EXTRACT(surveys_aggregation_json, '$[0].average') AS INT)) AS INT)AS STRING)",
+            "type": "string"
+          },
+          "reference_name": "ticket_csat"
+        }
+      ],
+      "measures": [
+        {
+          "devrev_schema": {
+            "data_name": "total_ids_count",
+            "db_name": "total_ids_count",
+            "field_type": "int",
+            "name": "total_ids_count",
+            "oasis": {
+              "name": "total_ids_count"
+            },
+            "ui": {
+              "display_name": "Total Ids Count"
+            }
+          },
+          "meerkat_schema": {
+            "sql_expression": "COUNT(DISTINCT id)",
+            "type": "number"
+          },
+          "reference_name": "total_ids_count"
+        }
+      ],
+      "oasis": {
+        "datasets": [
+          "devrev.dim_ticket"
+        ],
+        "sql_query": "SELECT t.id, t.object_type as type, t.state, t.surveys_aggregation_json, t.created_date, t.actual_close_date FROM devrev.dim_ticket t WHERE surveys_aggregation_json IS NOT NULL AND surveys_aggregation_json != '[]'"
+      },
+      "reference_name": "dim_ticket",
+      "type": "oasis"
+    }
+  ],
+  "sub_widgets": [
+    {
+      "query": {
+        "dimensions": [
+          "dim_ticket.ticket_csat"
+        ],
+        "measures": [
+          "dim_ticket.total_ids_count"
+        ],
+        "order_by": [
+          {
+            "direction": "ascending",
+            "reference_name": "dim_ticket.ticket_csat"
+          }
+        ]
+      },
+      "reference_id": "widget1",
+      "visualization": {
+        "donut": {
+          "x": [
+            {
+              "color": {
+                "key_lookup": [
+                  {
+                    "key": "1",
+                    "value": "chart-alert-base"
+                  },
+                  {
+                    "key": "2",
+                    "value": "chart-category-5-base"
+                  },
+                  {
+                    "key": "3",
+                    "value": "chart-category-2-base"
+                  },
+                  {
+                    "key": "4",
+                    "value": "chart-category-4-base"
+                  },
+                  {
+                    "key": "5",
+                    "value": "chart-success-base"
+                  }
+                ],
+                "type": "key_lookup"
+              },
+              "label": "CSAT",
+              "reference_name": "dim_ticket.ticket_csat"
+            }
+          ],
+          "y": {
+            "label": "Count",
+            "reference_name": "dim_ticket.total_ids_count"
+          }
+        },
+        "type": "donut"
+      }
+    }
+  ],
+  "layout": [
+    {
+      "position": {
+        "height": 2,
+        "width": 3,
+        "x": 0,
+        "y": 0
+      },
+      "reference_id": "widget1"
+    }
+  ],
+  "name": "csat_distribution"
+}

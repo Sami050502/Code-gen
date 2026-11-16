@@ -1,0 +1,513 @@
+{
+  "data_sources": [
+    {
+      "dimensions": [
+        {
+          "devrev_schema": {
+            "field_type": "enum",
+            "allowed_values": [
+              "ticket"
+            ],
+            "data_name": "type",
+            "db_name": "type",
+            "is_filterable": true,
+            "name": "type",
+            "oasis": {
+              "name": "type"
+            },
+            "ui": {
+              "display_name": "Type",
+              "filter_view": {
+                "is_hidden": true
+              }
+            }
+          },
+          "meerkat_schema": {
+            "sql_expression": "type",
+            "type": "string"
+          },
+          "reference_name": "type"
+        },
+        {
+          "devrev_schema": {
+            "field_type": "id",
+            "data_name": "id",
+            "db_name": "id",
+            "id_type": [
+              "work"
+            ],
+            "is_filterable": true,
+            "name": "id",
+            "oasis": {
+              "name": "id"
+            },
+            "ui": {
+              "display_name": "Ticket Id"
+            }
+          },
+          "meerkat_schema": {
+            "sql_expression": "id",
+            "type": "string"
+          },
+          "reference_name": "id"
+        },
+        {
+          "devrev_schema": {
+            "field_type": "timestamp",
+            "data_name": "created_date",
+            "db_name": "created_date",
+            "is_filterable": true,
+            "name": "created_date",
+            "oasis": {
+              "name": "created_date"
+            },
+            "ui": {
+              "display_name": "Created Date"
+            }
+          },
+          "meerkat_schema": {
+            "sql_expression": "created_date",
+            "type": "time"
+          },
+          "reference_name": "created_date"
+        },
+        {
+          "devrev_schema": {
+            "field_type": "timestamp",
+            "data_name": "actual_close_date",
+            "db_name": "actual_close_date",
+            "is_filterable": true,
+            "name": "actual_close_date",
+            "oasis": {
+              "name": "actual_close_date"
+            },
+            "ui": {
+              "display_name": "Close Date"
+            }
+          },
+          "meerkat_schema": {
+            "sql_expression": "actual_close_date",
+            "type": "time"
+          },
+          "reference_name": "actual_close_date"
+        },
+        {
+          "devrev_schema": {
+            "field_type": "enum",
+            "allowed_values": [
+              "APJ",
+              "AMER",
+              "EMEA",
+              "LATAM"
+            ],
+            "data_name": "region",
+            "db_name": "region",
+            "is_filterable": true,
+            "name": "region",
+            "oasis": {
+              "name": "region"
+            },
+            "ui": {
+              "display_name": "Region"
+            }
+          },
+          "meerkat_schema": {
+            "sql_expression": "custom_region",
+            "type": "string"
+          },
+          "reference_name": "custom_region"
+        },
+        {
+          "devrev_schema": {
+            "field_type": "id",
+            "data_name": "account",
+            "db_name": "account",
+            "id_type": [
+              "account"
+            ],
+            "is_filterable": false,
+            "name": "account",
+            "oasis": {
+              "name": "account"
+            },
+            "ui": {
+              "display_name": "Account"
+            }
+          },
+          "meerkat_schema": {
+            "sql_expression": "account",
+            "type": "string"
+          },
+          "reference_name": "account"
+        },
+        {
+          "devrev_schema": {
+            "field_type": "enum",
+            "allowed_values": [
+              "Feature Request",
+              "Request",
+              "Bug",
+              "cs_implementation",
+              "Events"
+            ],
+            "data_name": "subtype",
+            "db_name": "subtype",
+            "is_filterable": true,
+            "name": "subtype",
+            "oasis": {
+              "name": "subtype"
+            },
+            "ui": {
+              "display_name": "Subtype"
+            }
+          },
+          "meerkat_schema": {
+            "sql_expression": "subtype",
+            "type": "string"
+          },
+          "reference_name": "subtype"
+        },
+        {
+          "devrev_schema": {
+            "field_type": "array",
+            "base_type": "id",
+            "data_name": "owned_by_ids",
+            "db_name": "owned_by_ids",
+            "id_type": [
+              "dev_user",
+              "service_account"
+            ],
+            "is_filterable": true,
+            "name": "owned_by_ids",
+            "oasis": {
+              "name": "owned_by_ids"
+            },
+            "ui": {
+              "display_name": "Owners"
+            }
+          },
+          "meerkat_schema": {
+            "sql_expression": "owned_by_ids",
+            "type": "string_array"
+          },
+          "reference_name": "owned_by_ids"
+        },
+        {
+          "devrev_schema": {
+            "field_type": "id",
+            "data_name": "group_ticket",
+            "db_name": "group_ticket",
+            "id_type": [
+              "group"
+            ],
+            "is_filterable": true,
+            "name": "group_ticket",
+            "oasis": {
+              "name": "group_ticket"
+            },
+            "ui": {
+              "display_name": "Group"
+            }
+          },
+          "meerkat_schema": {
+            "sql_expression": "group_ticket",
+            "type": "string"
+          },
+          "reference_name": "group_ticket"
+        },
+        {
+          "devrev_schema": {
+            "field_type": "enum",
+            "allowed_values": [
+              "plug",
+              "chat",
+              "slack",
+              "email",
+              "whatsapp"
+            ],
+            "data_name": "source_channel",
+            "db_name": "source_channel",
+            "is_filterable": true,
+            "name": "source_channel",
+            "oasis": {
+              "name": "source_channel"
+            },
+            "ui": {
+              "display_name": "Source"
+            }
+          },
+          "meerkat_schema": {
+            "sql_expression": "source_channel",
+            "type": "string"
+          },
+          "reference_name": "source_channel"
+        },
+        {
+          "devrev_schema": {
+            "field_type": "uenum",
+            "allowed_values": [
+              {
+                "id": 5,
+                "label": "Blocker",
+                "ordinal": 2,
+                "value": null
+              },
+              {
+                "id": 6,
+                "label": "High",
+                "ordinal": 3,
+                "value": null
+              },
+              {
+                "id": 7,
+                "label": "Medium",
+                "ordinal": 4,
+                "value": null
+              },
+              {
+                "id": 8,
+                "label": "Low",
+                "ordinal": 5,
+                "value": null
+              }
+            ],
+            "data_name": "severity_name",
+            "db_name": "severity_name",
+            "is_filterable": true,
+            "name": "severity_name",
+            "oasis": {
+              "name": "severity_name"
+            },
+            "ui": {
+              "display_name": "Severity"
+            }
+          },
+          "meerkat_schema": {
+            "sql_expression": "severity",
+            "type": "number"
+          },
+          "reference_name": "severity_name"
+        },
+        {
+          "devrev_schema": {
+            "field_type": "array",
+            "base_type": "id",
+            "data_name": "applies_to_part_ids",
+            "db_name": "applies_to_part_ids",
+            "id_type": [
+              "part"
+            ],
+            "is_filterable": true,
+            "name": "applies_to_part_ids",
+            "oasis": {
+              "name": "applies_to_part_ids"
+            },
+            "ui": {
+              "display_name": "Parts"
+            }
+          },
+          "meerkat_schema": {
+            "sql_expression": "applies_to_part_ids",
+            "type": "string_array"
+          },
+          "reference_name": "applies_to_part_ids"
+        },
+        {
+          "devrev_schema": {
+            "field_type": "array",
+            "base_type": "id",
+            "data_name": "rev_oids",
+            "db_name": "rev_oids",
+            "id_type": [
+              "rev_org"
+            ],
+            "is_filterable": true,
+            "name": "rev_oids",
+            "oasis": {
+              "name": "rev_oids"
+            },
+            "ui": {
+              "display_name": "Customer"
+            }
+          },
+          "meerkat_schema": {
+            "sql_expression": "participant_oids",
+            "type": "string_array"
+          },
+          "reference_name": "rev_oids"
+        },
+        {
+          "devrev_schema": {
+            "field_type": "array",
+            "base_type": "id",
+            "data_name": "split_tags",
+            "db_name": "split_tags",
+            "id_type": [
+              "tag"
+            ],
+            "is_filterable": true,
+            "name": "split_tags",
+            "oasis": {
+              "name": "split_tags"
+            },
+            "ui": {
+              "display_name": "Tags"
+            }
+          },
+          "meerkat_schema": {
+            "sql_expression": "JSON_EXTRACT_STRING(tags_json, '$[*].tag_id')",
+            "type": "string_array"
+          },
+          "reference_name": "split_tags"
+        },
+        {
+          "devrev_schema": {
+            "field_type": "id",
+            "data_name": "created_by_id",
+            "db_name": "created_by_id",
+            "id_type": [
+              "dev_user",
+              "rev_user"
+            ],
+            "is_filterable": true,
+            "name": "created_by_id",
+            "oasis": {
+              "name": "created_by_id"
+            },
+            "ui": {
+              "display_name": "Created By"
+            }
+          },
+          "meerkat_schema": {
+            "sql_expression": "created_by_id",
+            "type": "string"
+          },
+          "reference_name": "created_by_id"
+        },
+        {
+          "devrev_schema": {
+            "field_type": "enum",
+            "allowed_values": [
+              "waiting_on_user",
+              "suspended",
+              "needs_response",
+              "new",
+              "hold"
+            ],
+            "data_name": "stage_name",
+            "db_name": "stage_name",
+            "is_filterable": true,
+            "name": "stage_name",
+            "oasis": {
+              "name": "stage_name"
+            },
+            "ui": {
+              "display_name": "Stage"
+            }
+          },
+          "meerkat_schema": {
+            "sql_expression": "json_extract_string(stage_json, '$.name')",
+            "type": "string"
+          },
+          "reference_name": "stage_name"
+        }
+      ],
+      "measures": [
+        {
+          "devrev_schema": {
+            "field_type": "double",
+            "data_name": "avg_resolution_time",
+            "db_name": "avg_resolution_time",
+            "is_filterable": false,
+            "name": "avg_resolution_time",
+            "oasis": {
+              "name": "avg_resolution_time"
+            },
+            "ui": {
+              "display_name": "Median Resolution Time",
+              "unit": "minutes"
+            }
+          },
+          "meerkat_schema": {
+            "sql_expression": "AVG(DATE_DIFF('minute', created_date, actual_close_date))",
+            "type": "number"
+          },
+          "reference_name": "avg_resolution_time"
+        },
+        {
+          "devrev_schema": {
+            "field_type": "double",
+            "data_name": "avg_resolution_time",
+            "db_name": "avg_resolution_time",
+            "is_filterable": false,
+            "name": "avg_resolution_time",
+            "oasis": {
+              "name": "avg_resolution_time"
+            },
+            "ui": {
+              "display_name": "Median Resolution Time",
+              "unit": "minutes"
+            }
+          },
+          "meerkat_schema": {
+            "sql_expression": "AVG(DATE_DIFF('minute', created_date, first_response_time))",
+            "type": "number"
+          },
+          "reference_name": "avg_first_response_time"
+        }
+      ],
+      "oasis": {
+        "datasets": [
+          "devrev.dim_conversation",
+          "devrev.dim_revu_slim",
+          "devrev.dim_revo"
+        ],
+        "sql_query": "SELECT t.id, t.object_type as type,  t.last_message_timestamp as actual_close_date, t.first_response_time, t.created_date, t.owned_by_ids, t.participant_oids, t.created_by_id, t.tags_json, t.\"group\" as group_ticket, t.source_channel, t.stage_json, dim_revo.id as rev_oid, FROM devrev.dim_conversation t LEFT JOIN devrev.dim_revu_slim dim_revu ON dim_revu.id = t.created_by_id LEFT JOIN devrev.dim_revo ON dim_revo.id = t.participant_oids[1] WHERE t.first_response_time > t.created_date"
+      },
+      "reference_name": "dim_conversation",
+      "type": "oasis"
+    }
+  ],
+  "description": "Signifies the average of the distribution of time taken to provide the first response to the customer on a conversation",
+  "is_system": true,
+  "layout": [
+    {
+      "position": {
+        "height": 2,
+        "width": 3,
+        "x": 0,
+        "y": 0
+      },
+      "reference_id": "widget1"
+    }
+  ],
+  "sub_widgets": [
+    {
+      "query": {
+        "measures": [
+          "dim_conversation.avg_first_response_time"
+        ]
+      },
+      "reference_id": "first-response-time-avg",
+      "visualization": {
+        "metric": {
+          "y": [
+            {
+              "drill_throughs": [
+                {
+                  "dashboard": "don:data:dvrv-us-1:dashboard/ywOZcMXSFj",
+                  "label": "drill"
+                }
+              ],
+              "label": "Average First Response Time",
+              "reference_name": "dim_conversation.avg_first_response_time"
+            }
+          ]
+        },
+        "type": "metric"
+      }
+    }
+  ],
+  "title": "Average First Response Time",
+  "name": "average_first_response_time"
+}

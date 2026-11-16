@@ -1,0 +1,347 @@
+# Validation Schema for Mosaic Widgets
+# Source of truth for StructuralValidationRule
+# Extracted from: /Users/devrev/code/explorer/dashboard/mosaic-client/gen/schema.yaml
+
+version: "1.0.0"
+description: "Validation enums and constraints for Mosaic widget validation"
+
+# Validation enums (lines referenced from schema.yaml)
+enums:
+  # Widget version (schema.yaml lines 336-342)
+  widget_versions:
+    - "v0"
+    - "v1"
+    - "v2"
+
+  # Visualization types (schema.yaml lines 1499-1514)
+  visualization_types:
+    - "line"
+    - "bar"
+    - "column"
+    - "donut"
+    - "pie"
+    - "table"
+    - "metric"
+    - "scatter"
+    - "heatmap"
+    - "packed_bubble"
+    - "rich_text"
+    - "kanban"
+    - "combination"
+    - "flame"
+    - "gantt"
+
+  # Data source types (schema.yaml lines 1117-1122)
+  data_source_types:
+    - "oasis"
+    - "data_source"
+    - "external_data_source"
+    - "api"
+    - "data_view"
+
+  # Sort directions (schema.yaml lines 1040-1045)
+  sort_directions:
+    - "ascending"
+    - "descending"
+
+  # Measure types (schema.yaml lines 1771-1778)
+  measure_types:
+    - "count"
+    - "sum"
+    - "avg"
+    - "min"
+    - "max"
+    - "custom"
+
+  # Dimension types (schema.yaml lines 1894-1900)
+  dimension_types:
+    - "attribute"
+    - "time"
+    - "custom"
+
+# Field constraints (from schema.yaml)
+constraints:
+  widget:
+    title:
+      max_len: 256
+      required: true
+    description:
+      max_len: 2048
+      required: false
+    sub_widgets:
+      max_items: 10
+      min_items: 1
+      required: true
+    version:
+      required: true
+    data_sources:
+      required: false  # Optional at widget level
+
+  sub_widget:
+    reference_id:
+      required: true
+      pattern: "^[a-zA-Z][a-zA-Z0-9_]*$"
+    visualization:
+      required: true
+
+  data_source:
+    reference_name:
+      required: true
+      pattern: "^[a-zA-Z][a-zA-Z0-9_]*$"
+    type:
+      required: true
+
+  query:
+    limit:
+      gte: 0
+    order_by:
+      direction:
+        required: true
+
+# Type-field consistency rules
+# When a type enum is set, the corresponding composite field must exist
+type_consistency:
+  visualization:
+    # type: line requires line: {...}
+    # type: bar requires bar: {...}
+    # etc. for all visualization types
+    rule: "visualization.type must match visualization.<type> field"
+
+  data_source:
+    # type: oasis requires oasis: {...}
+    # type: data_source requires data_source: <id>
+    rule: "data_source.type must match corresponding field"
+
+# Visualization-specific required fields (schema.yaml lines 1492-1989)
+# Each visualization type has specific required configuration fields
+visualization_required_fields:
+  line:
+    # schema.yaml lines 1685-1704
+    x:
+      required: true
+      type: "array"
+      description: "X-axis configuration array"
+    y:
+      required: true
+      type: "array"
+      description: "Y-axis configuration array"
+
+  bar:
+    # schema.yaml lines 1729-1748
+    x:
+      required: true
+      type: "array"
+      description: "X-axis configuration array"
+    y:
+      required: true
+      type: "array"
+      description: "Y-axis configuration array"
+
+  column:
+    # schema.yaml lines 1781-1800
+    x:
+      required: true
+      type: "array"
+      description: "X-axis configuration array"
+    y:
+      required: true
+      type: "array"
+      description: "Y-axis configuration array"
+
+  donut:
+    # schema.yaml lines 1833-1852
+    x:
+      required: true
+      type: "array"
+      description: "X-axis configuration array"
+    y:
+      required: true
+      type: "object"
+      description: "Y-axis configuration object"
+
+  pie:
+    # schema.yaml lines 1863-1882
+    x:
+      required: true
+      type: "array"
+      description: "X-axis configuration array"
+    y:
+      required: true
+      type: "object"
+      description: "Y-axis configuration object"
+
+  table:
+    # schema.yaml lines 1893-1902
+    columns:
+      required: true
+      type: "array"
+      description: "Column configuration array"
+
+  metric:
+    # schema.yaml lines 1981-1989
+    y:
+      required: true
+      type: "array"
+      description: "Y-axis configuration array"
+
+  kanban:
+    # schema.yaml lines 1933-1942
+    card_attributes:
+      required: true
+      type: "array"
+      description: "Card attributes configuration array"
+
+  scatter:
+    # schema.yaml lines 1592-1599 (similar to line/bar)
+    x:
+      required: true
+      type: "array"
+      description: "X-axis configuration array"
+    y:
+      required: true
+      type: "array"
+      description: "Y-axis configuration array"
+
+  heatmap:
+    # schema.yaml lines 1600-1607 (similar to line/bar)
+    x:
+      required: true
+      type: "array"
+      description: "X-axis configuration array"
+    y:
+      required: true
+      type: "array"
+      description: "Y-axis configuration array"
+
+  packed_bubble:
+    # schema.yaml lines 1608-1615
+    y:
+      required: true
+      type: "array"
+      description: "Y-axis configuration array"
+
+  combination:
+    # schema.yaml lines 1642-1668
+    series:
+      required: true
+      type: "array"
+      description: "Series configuration array"
+    x_axis:
+      required: true
+      type: "array"
+      description: "X-axis configuration array"
+    y_axis:
+      required: true
+      type: "array"
+      description: "Y-axis configuration array"
+
+  flame:
+    # Flame graph - check schema for requirements
+    # Note: schema uses 'flame_graph' as composite type name
+    required_fields: []  # To be determined from schema
+
+  gantt:
+    # schema.yaml lines 1632-1637
+    # Gantt configuration - check schema for requirements
+    required_fields: []  # To be determined from schema
+
+  rich_text:
+    # schema.yaml lines 1624-1631
+    # Rich text doesn't require axes
+    required_fields: []
+
+# DevRev to Meerkat type mapping validation
+# Source: mosaic/internal/utils/constants.go lines 10-35
+# Backend enforces these mappings in widget_create.go:validateCreateWidgetColumnProjection
+type_mappings:
+  devrev_to_meerkat:
+    # Primitive types
+    int:
+      meerkat_type: "number"
+      category: "primitive"
+    double:
+      meerkat_type: "number"
+      category: "primitive"
+    bool:
+      meerkat_type: "boolean"
+      category: "primitive"
+    date:
+      meerkat_type: "time"
+      category: "primitive"
+    timestamp:
+      meerkat_type: "time"
+      category: "primitive"
+
+    # Non-primitive types
+    id:
+      meerkat_type: "string"
+      category: "non_primitive"
+    tokens:
+      meerkat_type: "string"
+      category: "non_primitive"
+    text:
+      meerkat_type: "string"
+      category: "non_primitive"
+    enum:
+      meerkat_type: "string"
+      category: "non_primitive"
+    uenum:
+      meerkat_type: "number"
+      category: "non_primitive"
+
+    # Array of primitive types
+    "[]int":
+      meerkat_type: "number_array"
+      category: "array_primitive"
+    "[]double":
+      meerkat_type: "number_array"
+      category: "array_primitive"
+
+    # Array of non-primitive types
+    "[]id":
+      meerkat_type: "string_array"
+      category: "array_non_primitive"
+    "[]text":
+      meerkat_type: "string_array"
+      category: "array_non_primitive"
+    "[]tokens":
+      meerkat_type: "string_array"
+      category: "array_non_primitive"
+    "[]enum":
+      meerkat_type: "string_array"
+      category: "array_non_primitive"
+    "[]uenum":
+      meerkat_type: "number_array"
+      category: "array_non_primitive"
+
+  # Types that are explicitly unsupported by backend
+  unsupported_types:
+    - "composite"
+    - "[]bool"
+    - "[]date"
+    - "[]timestamp"
+
+  # Aggregate function output type rules
+  # Source: mosaic/internal/utils/constants.go lines 92-121
+  aggregate_functions:
+    count:
+      output_type: "number"
+      rule: "always_number"
+    count_distinct:
+      output_type: "number"
+      rule: "always_number"
+    sum:
+      output_type: "number"
+      rule: "always_number"
+    avg:
+      output_type: "number"
+      rule: "always_number"
+    median:
+      output_type: "number"
+      rule: "always_number"
+    min:
+      output_type: "preserve_input"
+      rule: "preserve_input_type"
+    max:
+      output_type: "preserve_input"
+      rule: "preserve_input_type"

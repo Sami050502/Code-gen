@@ -1,0 +1,403 @@
+{
+  "data_sources": [
+    {
+      "dimensions": [
+        {
+          "devrev_schema": {
+            "field_type": "id",
+            "data_name": "commenter",
+            "db_name": "commenter",
+            "id_type": [
+              "dev_user"
+            ],
+            "is_filterable": true,
+            "name": "commenter",
+            "oasis": {
+              "name": "commenter"
+            },
+            "ui": {
+              "display_name": "User",
+              "placeholder": "Add User"
+            }
+          },
+          "meerkat_schema": {
+            "sql_expression": "commenter",
+            "type": "string"
+          },
+          "reference_name": "commenter",
+          "type": "native"
+        },
+        {
+          "devrev_schema": {
+            "field_type": "enum",
+            "allowed_values": [
+              "ticket"
+            ],
+            "data_name": "type",
+            "db_name": "type",
+            "is_filterable": true,
+            "name": "type",
+            "oasis": {
+              "name": "type"
+            },
+            "ui": {
+              "display_name": "Type",
+              "filter_view": {
+                "is_hidden": true
+              },
+              "is_sortable": true,
+              "placeholder": "Add Type"
+            }
+          },
+          "meerkat_schema": {
+            "sql_expression": "object_type",
+            "type": "string"
+          },
+          "reference_name": "type",
+          "type": "native"
+        },
+        {
+          "devrev_schema": {
+            "field_type": "date",
+            "data_name": "comment_date",
+            "db_name": "comment_date",
+            "is_filterable": true,
+            "name": "comment_date",
+            "oasis": {
+              "name": "comment_date"
+            },
+            "ui": {
+              "display_name": "Comment Date",
+              "is_sortable": true,
+              "placeholder": "Add Comment Date"
+            }
+          },
+          "meerkat_schema": {
+            "sql_expression": "record_date",
+            "type": "time"
+          },
+          "reference_name": "comment_date",
+          "type": "native"
+        },
+        {
+          "devrev_schema": {
+            "field_type": "timestamp",
+            "data_name": "created_date",
+            "db_name": "created_date",
+            "is_filterable": true,
+            "name": "created_date",
+            "oasis": {
+              "name": "created_date"
+            },
+            "ui": {
+              "display_name": "Created Date",
+              "is_sortable": true,
+              "placeholder": "Add Created Date"
+            }
+          },
+          "meerkat_schema": {
+            "sql_expression": "created_date",
+            "type": "time"
+          },
+          "reference_name": "created_date",
+          "type": "native"
+        },
+        {
+          "devrev_schema": {
+            "field_type": "id",
+            "data_name": "part",
+            "db_name": "part",
+            "id_type": [
+              "part"
+            ],
+            "is_filterable": true,
+            "name": "part",
+            "oasis": {
+              "name": "part"
+            },
+            "ui": {
+              "display_name": "Part",
+              "placeholder": "Add Part"
+            }
+          },
+          "meerkat_schema": {
+            "sql_expression": "applies_to_part_id",
+            "type": "string"
+          },
+          "reference_name": "part",
+          "type": "native"
+        },
+        {
+          "devrev_schema": {
+            "field_type": "id",
+            "data_name": "account",
+            "db_name": "account",
+            "id_type": [
+              "account"
+            ],
+            "is_filterable": true,
+            "name": "account",
+            "oasis": {
+              "name": "account"
+            },
+            "ui": {
+              "display_name": "Account",
+              "placeholder": "Add Account"
+            }
+          },
+          "meerkat_schema": {
+            "sql_expression": "account_id",
+            "type": "string"
+          },
+          "reference_name": "account",
+          "type": "native"
+        },
+        {
+          "devrev_schema": {
+            "field_type": "id",
+            "data_name": "stage",
+            "db_name": "stage",
+            "id_type": [
+              "custom_stage"
+            ],
+            "is_filterable": true,
+            "name": "stage",
+            "oasis": {
+              "name": "stage"
+            },
+            "ui": {
+              "display_name": "Stage",
+              "placeholder": "Add Stage"
+            }
+          },
+          "meerkat_schema": {
+            "sql_expression": "stage_json->>'$.stage_id'",
+            "type": "string"
+          },
+          "reference_name": "stage",
+          "type": "native"
+        },
+        {
+          "devrev_schema": {
+            "field_type": "id",
+            "data_name": "group_ticket",
+            "db_name": "group_ticket",
+            "id_type": [
+              "group"
+            ],
+            "is_filterable": true,
+            "name": "group_ticket",
+            "oasis": {
+              "name": "group_ticket"
+            },
+            "ui": {
+              "display_name": "Group",
+              "placeholder": "Add Group"
+            }
+          },
+          "meerkat_schema": {
+            "sql_expression": "group_ticket",
+            "type": "string"
+          },
+          "reference_name": "group_ticket",
+          "type": "native"
+        },
+        {
+          "devrev_schema": {
+            "field_type": "array",
+            "base_type": "id",
+            "data_name": "split_tags",
+            "db_name": "split_tags",
+            "id_type": [
+              "tag"
+            ],
+            "is_filterable": true,
+            "name": "split_tags",
+            "oasis": {
+              "name": "split_tags"
+            },
+            "ui": {
+              "display_name": "Tags",
+              "placeholder": "Add Tags"
+            }
+          },
+          "meerkat_schema": {
+            "sql_expression": "JSON_EXTRACT_STRING(tags_json, '$[*].tag_id')",
+            "type": "string_array"
+          },
+          "reference_name": "split_tags",
+          "type": "native"
+        }
+      ],
+      "measures": [
+        {
+          "devrev_schema": {
+            "field_type": "int",
+            "data_name": "total_comments",
+            "db_name": "total_comments",
+            "is_filterable": false,
+            "name": "total_comments",
+            "oasis": {
+              "name": "total_comments"
+            },
+            "ui": {
+              "display_name": "Total Comments",
+              "is_sortable": true,
+              "placeholder": "Add Total Comments"
+            }
+          },
+          "meerkat_schema": {
+            "sql_expression": "COUNT(*)",
+            "type": "number"
+          },
+          "reference_name": "total_comments",
+          "type": "native"
+        },
+        {
+          "devrev_schema": {
+            "field_type": "int",
+            "data_name": "internal_comments",
+            "db_name": "internal_comments",
+            "is_filterable": false,
+            "name": "internal_comments",
+            "oasis": {
+              "name": "internal_comments"
+            },
+            "ui": {
+              "display_name": "Internal Comments",
+              "is_sortable": true,
+              "placeholder": "Add Internal Comments"
+            }
+          },
+          "meerkat_schema": {
+            "sql_expression": "COUNT(CASE WHEN visibility = 'INTERNAL' THEN 1 END)",
+            "type": "number"
+          },
+          "reference_name": "internal_comments",
+          "type": "native"
+        },
+        {
+          "devrev_schema": {
+            "field_type": "int",
+            "data_name": "external_comments",
+            "db_name": "external_comments",
+            "is_filterable": false,
+            "name": "external_comments",
+            "oasis": {
+              "name": "external_comments"
+            },
+            "ui": {
+              "display_name": "External Comments",
+              "is_sortable": true,
+              "placeholder": "Add External Comments"
+            }
+          },
+          "meerkat_schema": {
+            "sql_expression": "COUNT(CASE WHEN visibility = 'EXTERNAL' THEN 1 END)",
+            "type": "number"
+          },
+          "reference_name": "external_comments",
+          "type": "native"
+        }
+      ],
+      "oasis": {
+        "datasets": [
+          "devrev.comments_created_on_tickets_summary",
+          "devrev.dim_ticket"
+        ],
+        "sql_query": "SELECT c.commenter, c.record_date, c.visibility, t.applies_to_part_id, t.account_id, t.stage_json, t.object_type as object_type, t.created_date, t.\"group\" as group_ticket, t.tags_json FROM devrev.comments_created_on_tickets_summary c LEFT JOIN devrev.dim_ticket t ON c.ticket_id = t.id WHERE c.commenter LIKE '%:devu/%'"
+      },
+      "reference_name": "user_comment_activity",
+      "type": "oasis"
+    }
+  ],
+  "description": "DevUser comment activity with breakdown of internal and external comments",
+  "layout": [
+    {
+      "position": {
+        "height": 2,
+        "width": 2,
+        "x": 0,
+        "y": 0
+      },
+      "reference_id": "subwidget1"
+    }
+  ],
+  "sub_widgets": [
+    {
+      "query": {
+        "dimensions": [
+          "user_comment_activity.commenter"
+        ],
+        "measures": [
+          "user_comment_activity.total_comments",
+          "user_comment_activity.internal_comments",
+          "user_comment_activity.external_comments"
+        ],
+        "order_by": [
+          {
+            "direction": "descending",
+            "reference_name": "user_comment_activity.external_comments"
+          }
+        ]
+      },
+      "reference_id": "widget-1",
+      "visualization": {
+        "table": {
+          "columns": [
+            {
+              "is_movable": false,
+              "is_resizable": true,
+              "label": "User",
+              "order": 1,
+              "reference_name": "user_comment_activity.commenter"
+            },
+            {
+              "drill_throughs": [
+                {
+                  "dashboard": "don:data:dvrv-us-1:devo/3fAHEC:dashboard/k8yyfhhkjp",
+                  "label": "drillthrough"
+                }
+              ],
+              "is_movable": false,
+              "is_resizable": true,
+              "label": "Total Comments",
+              "order": 2,
+              "reference_name": "user_comment_activity.total_comments"
+            },
+            {
+              "drill_throughs": [
+                {
+                  "dashboard": "don:data:dvrv-us-1:devo/3fAHEC:dashboard/k8yyfhhkjp",
+                  "label": "drillthrough"
+                }
+              ],
+              "is_movable": false,
+              "is_resizable": true,
+              "label": "Internal Comments",
+              "order": 3,
+              "reference_name": "user_comment_activity.internal_comments"
+            },
+            {
+              "drill_throughs": [
+                {
+                  "dashboard": "don:data:dvrv-us-1:devo/3fAHEC:dashboard/k8yyfhhkjp",
+                  "label": "drillthrough"
+                }
+              ],
+              "is_movable": false,
+              "is_resizable": true,
+              "label": "External Comments",
+              "order": 4,
+              "reference_name": "user_comment_activity.external_comments"
+            }
+          ]
+        },
+        "type": "table"
+      }
+    }
+  ],
+  "title": "DevUser Comment Activity Summary",
+  "version": "v0",
+  "name": "devuser_comment_activity"
+}

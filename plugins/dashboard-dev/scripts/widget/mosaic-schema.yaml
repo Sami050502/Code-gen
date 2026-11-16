@@ -1,0 +1,448 @@
+# Mosaic Client Schema (Sample)
+# This represents the canonical schema from mosaic-client/gen/schema.yaml
+
+version: "1.0.0"
+
+# Top-level object schemas
+objects:
+  widget:
+    description: "DevRev Widget Schema"
+    fields:
+      title:
+        type: text
+        required: true
+        max_len: 200
+        description: "Widget title"
+        display_name: "Title"
+      description:
+        type: text
+        required: false
+        max_len: 1000
+        description: "Widget description"
+        display_name: "Description"
+      version:
+        type: text
+        required: true
+        enum: ["v0"]
+        description: "Widget version"
+      data_sources:
+        type: "[]composite"
+        composite_type: data_source
+        required: true
+        min_items: 0
+        description: "Array of data sources"
+      sub_widgets:
+        type: "[]composite"
+        composite_type: sub_widget
+        required: true
+        min_items: 1
+        description: "Array of sub-widgets"
+      layout:
+        type: "[]composite"
+        composite_type: layout_config
+        required: true
+        description: "Widget layout configuration"
+
+  dashboard:
+    description: "DevRev Dashboard Schema"
+    fields:
+      title:
+        type: text
+        required: true
+        max_len: 200
+      description:
+        type: text
+        max_len: 1000
+      widgets:
+        type: "[]composite"
+        composite_type: widget
+        required: true
+
+# Composite types (83 types in real schema)
+composite_types:
+  data_source:
+    description: "Data source definition"
+    fields:
+      reference_name:
+        type: text
+        required: true
+        max_len: 100
+        pattern: "^[a-zA-Z][a-zA-Z0-9_]*$"
+      type:
+        type: text
+        enum: ["oasis", "rest", "graphql"]
+        description: "Data source type"
+      oasis:
+        type: composite
+        composite_type: oasis_config
+        description: "OASIS-specific configuration"
+      measures:
+        type: "[]composite"
+        composite_type: measure
+        description: "Measure definitions"
+      dimensions:
+        type: "[]composite"
+        composite_type: dimension
+        description: "Dimension definitions"
+      joins:
+        type: "[]composite"
+        composite_type: join
+        description: "Join configurations"
+
+  oasis_config:
+    description: "OASIS data source configuration"
+    fields:
+      sql_query:
+        type: text
+        required: true
+        min_len: 1
+        description: "SQL query for data retrieval"
+      datasets:
+        type: "[]text"
+        required: true
+        min_items: 1
+        description: "Required datasets"
+
+  measure:
+    description: "Measure definition"
+    fields:
+      reference_name:
+        type: text
+        required: true
+        max_len: 100
+        pattern: "^[a-zA-Z][a-zA-Z0-9_]*$"
+      type:
+        type: text
+        enum: ["count", "sum", "avg", "min", "max", "custom"]
+      devrev_schema:
+        type: composite
+        composite_type: schema_definition
+      meerkat_schema:
+        type: composite
+        composite_type: schema_definition
+      is_derived:
+        type: bool
+      has_custom_expression:
+        type: bool
+
+  dimension:
+    description: "Dimension definition"
+    fields:
+      reference_name:
+        type: text
+        required: true
+        max_len: 100
+        pattern: "^[a-zA-Z][a-zA-Z0-9_]*$"
+      type:
+        type: text
+        enum: ["attribute", "time", "custom"]
+      devrev_schema:
+        type: composite
+        composite_type: schema_definition
+      meerkat_schema:
+        type: composite
+        composite_type: schema_definition
+      is_derived:
+        type: bool
+      has_custom_expression:
+        type: bool
+
+  join:
+    description: "Join configuration"
+    fields:
+      type:
+        type: text
+        required: true
+        enum: ["inner", "left", "right", "full"]
+      on:
+        type: text
+        required: true
+
+  schema_definition:
+    description: "Schema definition object"
+    fields:
+      type:
+        type: text
+      properties:
+        type: tokens
+        description: "Arbitrary schema properties"
+
+  sub_widget:
+    description: "Sub-widget definition"
+    fields:
+      reference_id:
+        type: text
+        required: true
+        max_len: 100
+        pattern: "^[a-zA-Z][a-zA-Z0-9_]*$"
+      query:
+        type: composite
+        composite_type: query_config
+        description: "Query configuration"
+      visualization:
+        type: composite
+        composite_type: visualization_config
+        required: true
+
+  query_config:
+    description: "Query configuration"
+    fields:
+      measures:
+        type: "[]text"
+        description: "Measure references"
+      dimensions:
+        type: "[]text"
+        description: "Dimension references"
+      order_by:
+        type: "[]composite"
+        composite_type: order_by
+      filters:
+        type: "[]composite"
+        composite_type: filter
+      joins:
+        type: "[]composite"
+        composite_type: join
+
+  order_by:
+    description: "Order by clause"
+    fields:
+      reference_name:
+        type: text
+        required: true
+      direction:
+        type: text
+        enum: ["ascending", "descending"]
+        required: true
+
+  filter:
+    description: "Filter configuration"
+    fields:
+      field:
+        type: text
+        required: true
+      operator:
+        type: text
+        required: true
+        enum: ["eq", "ne", "gt", "gte", "lt", "lte", "in", "not_in", "like", "not_like"]
+      value:
+        type: tokens
+        required: true
+
+  visualization_config:
+    description: "Visualization configuration"
+    fields:
+      type:
+        type: text
+        required: true
+        enum: ["table", "column", "line", "pie", "metric", "bar", "scatter", "area", "donut"]
+      column:
+        type: composite
+        composite_type: column_viz_config
+      table:
+        type: composite
+        composite_type: table_viz_config
+      metric:
+        type: composite
+        composite_type: metric_viz_config
+      line:
+        type: composite
+        composite_type: line_viz_config
+      pie:
+        type: composite
+        composite_type: pie_viz_config
+      donut:
+        type: composite
+        composite_type: donut_viz_config
+
+  column_viz_config:
+    description: "Column chart configuration"
+    fields:
+      x_axis:
+        type: text
+      y_axis:
+        type: text
+      stacked:
+        type: bool
+
+  table_viz_config:
+    description: "Table visualization configuration"
+    fields:
+      columns:
+        type: "[]composite"
+        composite_type: table_column
+      pagination:
+        type: bool
+
+  table_column:
+    description: "Table column configuration"
+    fields:
+      reference_name:
+        type: text
+        required: true
+      label:
+        type: text
+      order:
+        type: int
+      width:
+        type: text
+
+  metric_viz_config:
+    description: "Metric visualization configuration"
+    fields:
+      y:
+        type: "[]composite"
+        composite_type: chart_series
+        required: true
+      pvp:
+        type: composite
+        composite_type: pvp_config
+
+  chart_series:
+    description: "Chart series configuration"
+    fields:
+      reference_name:
+        type: text
+        required: true
+      label:
+        type: text
+        required: true
+      color:
+        type: composite
+        composite_type: color_config
+      drill_throughs:
+        type: "[]composite"
+        composite_type: drill_through
+
+  pvp_config:
+    description: "Period-over-period configuration"
+    fields:
+      enabled:
+        type: bool
+      invert_correlation_color:
+        type: bool
+
+  color_config:
+    description: "Color configuration"
+    fields:
+      type:
+        type: text
+      static:
+        type: text
+      key_lookup:
+        type: "[]composite"
+        composite_type: key_lookup_mapping
+
+  key_lookup_mapping:
+    description: "Key to color mapping"
+    fields:
+      key:
+        type: text
+      value:
+        type: text
+
+  drill_through:
+    description: "Drill-through configuration"
+    fields:
+      dashboard:
+        type: text
+      dashboard_v1:
+        type: text
+      label:
+        type: text
+
+  line_viz_config:
+    description: "Line chart configuration"
+    fields:
+      x_axis:
+        type: text
+      y_axis:
+        type: text
+      show_points:
+        type: bool
+
+  pie_viz_config:
+    description: "Pie chart configuration"
+    fields:
+      value_field:
+        type: text
+        required: true
+      label_field:
+        type: text
+        required: true
+      show_legend:
+        type: bool
+
+  donut_viz_config:
+    description: "Donut chart configuration"
+    fields:
+      x:
+        type: "[]composite"
+        composite_type: chart_axis_item
+        description: "X-axis configuration array"
+      y:
+        type: composite
+        composite_type: chart_axis_item
+        description: "Y-axis configuration"
+
+  chart_axis_item:
+    description: "Chart axis item configuration"
+    fields:
+      reference_name:
+        type: text
+        required: true
+      label:
+        type: text
+      color:
+        type: composite
+        composite_type: color_config
+
+  color_config:
+    description: "Color configuration"
+    fields:
+      type:
+        type: text
+      static:
+        type: text
+      key_lookup:
+        type: "[]composite"
+        composite_type: key_lookup_item
+
+  key_lookup_item:
+    description: "Key lookup item for color mapping"
+    fields:
+      key:
+        type: text
+      value:
+        type: text
+
+  layout_config:
+    description: "Layout configuration"
+    fields:
+      grid_area:
+        type: text
+      position:
+        type: composite
+        composite_type: position
+      size:
+        type: composite
+        composite_type: size
+
+  position:
+    description: "Position coordinates"
+    fields:
+      x:
+        type: int
+        required: true
+      y:
+        type: int
+        required: true
+
+  size:
+    description: "Size dimensions"
+    fields:
+      width:
+        type: int
+        required: true
+      height:
+        type: int
+        required: true

@@ -1,0 +1,21 @@
+{
+  "name": "dashboard-dev",
+  "version": "2.0.0",
+  "description": "DevRev dashboard development plugin with workspace initialization, widget generation, and iterative validation.",
+  "author": {
+    "name": "DevRev Applied AI Team",
+    "email": "applied-ai@devrev.ai",
+    "url": "https://devrev.ai"
+  },
+  "homepage": "https://github.com/devrev/aai-skills/tree/main/plugins/dashboard-dev",
+  "repository": "https://github.com/devrev/aai-skills",
+  "keywords": [
+    "devrev",
+    "dashboard",
+    "widget",
+    "analytics",
+    "visualization",
+    "oasis",
+    "data-platform"
+  ]
+}

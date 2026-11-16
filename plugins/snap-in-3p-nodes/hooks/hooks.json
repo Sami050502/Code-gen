@@ -1,0 +1,29 @@
+{
+  "description": "Validation hooks for DevRev snap-in 3P node manifest files",
+  "hooks": {
+    "PreToolUse": [
+      {
+        "matcher": "Write|Edit",
+        "hooks": [
+          {
+            "type": "prompt",
+            "prompt": "You are validating a manifest.yaml edit for a DevRev snap-in 3P node. Check if the file being modified is 'manifest.yaml' or contains 'manifest' in the path.\n\nIf it is a manifest file, analyze the $TOOL_INPUT for these common mistakes:\n\n1. **Unsupported field types**: Check if using 'enum', 'rich_text', 'object', or 'date' (NOT supported)\n   - Only supported types: id, text, array, bool, int\n   - For enums: use field_type: array with base_type: enum\n   - For objects: use field_type: array with base_type: composite\n   - For dates: use field_type: text\n\n2. **Missing id_type**: Check if any field has field_type: id without id_type array\n   - All id fields MUST have id_type: [entity, types]\n\n3. **Missing base_type**: Check if any array field lacks base_type\n   - All array fields MUST have base_type: text, enum, or composite\n\n4. **Invalid naming**: Check for non-snake_case field names\n   - Field names must be snake_case (lowercase with underscores)\n\n5. **Enum arrays without allowed_values**: Check if base_type: enum without allowed_values\n\nIf you detect any issues, return:\n```json\n{\n  \"hookSpecificOutput\": {\n    \"permissionDecision\": \"allow\"\n  },\n  \"systemMessage\": \"⚠️  Manifest validation warning:\\n\\n[Describe the specific issue found]\\n\\nFix: [Provide specific fix suggestion]\\n\\nNote: This is a warning - the change is allowed but may cause deployment issues.\"\n}\n```\n\nIf no issues or not a manifest file, return:\n```json\n{\n  \"hookSpecificOutput\": {\n    \"permissionDecision\": \"allow\"\n  }\n}\n```\n\nIMPORTANT: Always set permissionDecision to 'allow' - this hook warns but never blocks.",
+            "timeout": 30
+          }
+        ]
+      }
+    ],
+    "PostToolUse": [
+      {
+        "matcher": "Write|Edit",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash -c 'input=$(cat); file_path=$(echo \"$input\" | jq -r \".tool_input.file_path // empty\"); if [[ \"$file_path\" == *\"manifest.yaml\"* ]] || [[ \"$file_path\" == *\"manifest.yml\"* ]]; then if [ -f \"${CLAUDE_PLUGIN_ROOT}/scripts/validate-manifest.sh\" ] && [ -f \"$file_path\" ]; then \"${CLAUDE_PLUGIN_ROOT}/scripts/validate-manifest.sh\" \"$file_path\" 2>&1 | jq -Rs \"{systemMessage: .}\"; else echo \"{}\"; fi; else echo \"{}\"; fi'",
+            "timeout": 10
+          }
+        ]
+      }
+    ]
+  }
+}

@@ -1,0 +1,16 @@
+{
+  "hooks": {
+    "PostToolUse": [
+      {
+        "matcher": "Write|Edit",
+        "hooks": [
+          {
+            "type": "prompt",
+            "prompt": "Check if the file just modified is part of a DevRev snap-in project. Look for these indicators:\n\n1. File is `manifest.yaml` with `version: \"2\"` and snap-in structure (service_account, functions, automations)\n2. File is in a `code/src/functions/` directory path\n3. File is `function-factory.ts` that imports from `./functions/`\n4. File is `package.json` containing `@devrev/typescript-sdk` dependency\n\nIf this IS a snap-in file modification, return ONLY this JSON:\n{\"systemMessage\": \"Snap-in file modified. Consider running the snap-in-verifier agent to validate your changes.\"}\n\nIf this is NOT a snap-in file, return ONLY this JSON:\n{}",
+            "timeout": 10
+          }
+        ]
+      }
+    ]
+  }
+}

@@ -1,0 +1,75 @@
+{
+  "version": "v0",
+  "name": "tickets_created_metric",
+  "title": "Tickets Created",
+  "description": "The number of Tickets Created",
+  "data_sources": [
+    {
+      "dimensions": [],
+      "measures": [
+        {
+          "devrev_schema": {
+            "data_name": "ticket_count",
+            "db_name": "ticket_count",
+            "field_type": "double",
+            "is_filterable": false,
+            "name": "ticket_count",
+            "oasis": {
+              "name": "ticket_count"
+            },
+            "ui": {
+              "display_name": "Ticket Count"
+            }
+          },
+          "meerkat_schema": {
+            "sql_expression": "count(distinct ticket)",
+            "type": "number"
+          },
+          "reference_name": "ticket_count"
+        }
+      ],
+      "oasis": {
+        "datasets": [
+          "devrev.dim_ticket",
+          "devrev.dim_revo",
+          "devrev.dim_account"
+        ],
+        "sql_query": "SELECT t.id as ticket, t.state, t.object_type as type, t.created_date FROM devrev.dim_ticket t LEFT JOIN devrev.dim_revo ON t.rev_oid = dim_revo.id LEFT JOIN devrev.dim_account ON dim_revo.account = dim_account.id"
+      },
+      "reference_name": "dim_ticket",
+      "type": "oasis"
+    }
+  ],
+  "sub_widgets": [
+    {
+      "query": {
+        "measures": [
+          "dim_ticket.ticket_count"
+        ]
+      },
+      "reference_id": "widget1",
+      "visualization": {
+        "metric": {
+          "y": [
+            {
+              "label": "Ticket Count",
+              "reference_name": "dim_ticket.ticket_count"
+            }
+          ]
+        },
+        "type": "metric"
+      }
+    }
+  ],
+  "layout": [
+    {
+      "position": {
+        "height": 2,
+        "width": 3,
+        "x": 0,
+        "y": 0
+      },
+      "reference_id": "widget1"
+    }
+  ]
+}

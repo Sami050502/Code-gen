@@ -1,0 +1,148 @@
+{
+  "title": "Tickets Created vs. Closed",
+  "description": "A trend of tickets created vs. closed",
+  "version": "v0",
+  "data_sources": [
+    {
+      "dimensions": [
+        {
+          "devrev_schema": {
+            "data_name": "record_date",
+            "db_name": "record_date",
+            "field_type": "timestamp",
+            "is_filterable": true,
+            "name": "record_date",
+            "oasis": {
+              "name": "record_date"
+            },
+            "ui": {
+              "display_name": "Created or Closed Date",
+              "filter_view": {
+                "is_hidden": true
+              },
+              "unit": "MMM d"
+            }
+          },
+          "meerkat_schema": {
+            "sql_expression": "DATE_TRUNC('day', record_date)",
+            "type": "time"
+          },
+          "reference_name": "record_date"
+        }
+      ],
+      "measures": [
+        {
+          "devrev_schema": {
+            "data_name": "closed_count",
+            "db_name": "closed_count",
+            "field_type": "double",
+            "is_filterable": false,
+            "name": "closed_count",
+            "oasis": {
+              "name": "closed_count"
+            },
+            "ui": {
+              "display_name": "Closed Tickets"
+            }
+          },
+          "meerkat_schema": {
+            "sql_expression": "count(DISTINCT CASE WHEN DATE_TRUNC('day', actual_close_date) == DATE_TRUNC('day', record_date) THEN ticket END)",
+            "type": "number"
+          },
+          "reference_name": "closed_count"
+        },
+        {
+          "devrev_schema": {
+            "data_name": "created_count",
+            "db_name": "created_count",
+            "field_type": "double",
+            "is_filterable": false,
+            "name": "created_count",
+            "oasis": {
+              "name": "created_count"
+            },
+            "ui": {
+              "display_name": "Created Tickets"
+            }
+          },
+          "meerkat_schema": {
+            "sql_expression": "count(DISTINCT CASE WHEN DATE_TRUNC('day', created_date) == DATE_TRUNC('day', record_date) THEN ticket END)",
+            "type": "number"
+          },
+          "reference_name": "created_count"
+        }
+      ],
+      "oasis": {
+        "datasets": [
+          "devrev.dim_ticket",
+          "devrev.dim_revo",
+          "devrev.dim_account"
+        ],
+        "sql_query": "SELECT t.id as ticket, t.state, t.object_type as type, t.actual_close_date, UNNEST(CASE WHEN (DATE_TRUNC('day', t.actual_close_date) == DATE_TRUNC('day', t.created_date)) OR t.actual_close_date IS NULL THEN array[t.created_date] ELSE array[t.created_date, t.actual_close_date] END) as record_date, t.created_date FROM devrev.dim_ticket t LEFT JOIN devrev.dim_revo ON t.rev_oid = dim_revo.id LEFT JOIN devrev.dim_account ON dim_revo.account = dim_account.id"
+      },
+      "reference_name": "dim_ticket",
+      "type": "oasis"
+    }
+  ],
+  "sub_widgets": [
+    {
+      "query": {
+        "dimensions": [
+          "dim_ticket.record_date"
+        ],
+        "measures": [
+          "dim_ticket.created_count",
+          "dim_ticket.closed_count"
+        ],
+        "order_by": [
+          {
+            "direction": "descending",
+            "reference_name": "dim_ticket.record_date"
+          }
+        ]
+      },
+      "reference_id": "widget1",
+      "visualization": {
+        "line": {
+          "x": [
+            {
+              "label": "Date",
+              "reference_name": "dim_ticket.record_date"
+            }
+          ],
+          "y": [
+            {
+              "color": {
+                "static": "chart-category-1-base",
+                "type": "static"
+              },
+              "label": "Created",
+              "reference_name": "dim_ticket.created_count"
+            },
+            {
+              "color": {
+                "static": "chart-category-2-base",
+                "type": "static"
+              },
+              "label": "Closed",
+              "reference_name": "dim_ticket.closed_count"
+            }
+          ]
+        },
+        "type": "line"
+      }
+    }
+  ],
+  "layout": [
+    {
+      "position": {
+        "height": 2,
+        "width": 3,
+        "x": 0,
+        "y": 0
+      },
+      "reference_id": "widget1"
+    }
+  ],
+  "name": "tickets_created_vs_closed"
+}

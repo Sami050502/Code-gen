@@ -1,0 +1,21 @@
+# Dashboard-dev Plugin Dependencies
+
+# SQL parsing and validation
+sqlglot>=20.0.0  # Fast SQL syntax parsing (permissive)
+duckdb>=0.9.0    # Authoritative SQL validation (strict)
+
+# Schema validation
+jsonschema>=4.0.0
+pyyaml>=6.0
+
+# API validation
+requests>=2.28.0
+
+# Async HTTP client for concurrent operations
+aiohttp>=3.9.0
+
+# Async file I/O
+aiofiles>=23.0.0
+
+# Arrow format for accurate schema detection
+pyarrow>=12.0.0  # Required for Oasis Arrow queries

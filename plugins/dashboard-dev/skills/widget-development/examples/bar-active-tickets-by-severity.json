@@ -1,0 +1,165 @@
+{
+  "title": "Active Tickets",
+  "description": "A distribution of tickets in Open and In Progress states and the respective owners.",
+  "version": "v0",
+  "data_sources": [
+    {
+      "dimensions": [
+        {
+          "devrev_schema": {
+            "data_name": "owned_by_id",
+            "db_name": "owned_by_id",
+            "field_type": "id",
+            "id_type": [
+              "dev_user",
+              "service_account"
+            ],
+            "is_filterable": true,
+            "name": "owned_by_id",
+            "oasis": {
+              "name": "owned_by_id"
+            },
+            "ui": {
+              "display_name": "Owner"
+            }
+          },
+          "meerkat_schema": {
+            "sql_expression": "owned_by_id",
+            "type": "string"
+          },
+          "reference_name": "owned_by_id"
+        },
+        {
+          "devrev_schema": {
+            "allowed_values": [
+              {
+                "id": 5,
+                "label": "Blocker",
+                "ordinal": 2,
+                "value": null
+              },
+              {
+                "id": 6,
+                "label": "High",
+                "ordinal": 3,
+                "value": null
+              },
+              {
+                "id": 7,
+                "label": "Medium",
+                "ordinal": 4,
+                "value": null
+              },
+              {
+                "id": 8,
+                "label": "Low",
+                "ordinal": 5,
+                "value": null
+              }
+            ],
+            "data_name": "severity_name",
+            "db_name": "severity_name",
+            "field_type": "uenum",
+            "is_filterable": true,
+            "name": "severity_name",
+            "oasis": {
+              "name": "severity_name"
+            },
+            "ui": {
+              "display_name": "Severity"
+            }
+          },
+          "meerkat_schema": {
+            "sql_expression": "severity",
+            "type": "number"
+          },
+          "reference_name": "severity_name"
+        }
+      ],
+      "measures": [
+        {
+          "devrev_schema": {
+            "data_name": "ticket_count",
+            "db_name": "ticket_count",
+            "field_type": "double",
+            "is_filterable": false,
+            "name": "ticket_count",
+            "oasis": {
+              "name": "ticket_count"
+            },
+            "ui": {
+              "display_name": "Ticket Count"
+            }
+          },
+          "meerkat_schema": {
+            "sql_expression": "count(distinct ticket)",
+            "type": "number"
+          },
+          "reference_name": "ticket_count"
+        }
+      ],
+      "oasis": {
+        "datasets": [
+          "devrev.dim_ticket"
+        ],
+        "sql_query": "SELECT t.id as ticket, t.object_type as type, t.state, t.owned_by_ids, UNNEST(t.owned_by_ids) as owned_by_id, t.severity FROM devrev.dim_ticket t WHERE t.state !='closed'"
+      },
+      "reference_name": "dim_ticket",
+      "type": "oasis"
+    }
+  ],
+  "sub_widgets": [
+    {
+      "query": {
+        "dimensions": [
+          "dim_ticket.owned_by_id",
+          "dim_ticket.severity_name"
+        ],
+        "measures": [
+          "dim_ticket.ticket_count"
+        ],
+        "order_by": [
+          {
+            "direction": "descending",
+            "reference_name": "dim_ticket.ticket_count"
+          }
+        ]
+      },
+      "reference_id": "widget1",
+      "visualization": {
+        "bar": {
+          "is_stacked": true,
+          "x": [
+            {
+              "label": "Agent",
+              "reference_name": "dim_ticket.owned_by_id"
+            },
+            {
+              "label": "Severity",
+              "reference_name": "dim_ticket.severity_name"
+            }
+          ],
+          "y": [
+            {
+              "label": "Active Tickets",
+              "reference_name": "dim_ticket.ticket_count"
+            }
+          ]
+        },
+        "type": "bar"
+      }
+    }
+  ],
+  "layout": [
+    {
+      "position": {
+        "height": 2,
+        "width": 3,
+        "x": 0,
+        "y": 0
+      },
+      "reference_id": "widget1"
+    }
+  ],
+  "name": "active_tickets_by_severity"
+}

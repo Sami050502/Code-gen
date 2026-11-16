@@ -1,0 +1,139 @@
+{
+  "title": "Active Tickets by Owner",
+  "description": "A distribution of tickets in Open and In Progress states and the respective owners.",
+  "version": "v0",
+  "data_sources": [
+    {
+      "dimensions": [
+        {
+          "devrev_schema": {
+            "allowed_values": [
+              "ticket"
+            ],
+            "data_name": "type",
+            "db_name": "type",
+            "field_type": "enum",
+            "is_filterable": true,
+            "name": "type",
+            "oasis": {
+              "name": "type"
+            },
+            "ui": {
+              "display_name": "Type",
+              "filter_view": {
+                "is_hidden": true
+              }
+            }
+          },
+          "meerkat_schema": {
+            "sql_expression": "type",
+            "type": "string"
+          },
+          "reference_name": "type"
+        },
+        {
+          "devrev_schema": {
+            "data_name": "owned_by_ids",
+            "db_name": "owned_by_ids",
+            "field_type": "id",
+            "id_type": [
+              "dev_user",
+              "service_account"
+            ],
+            "is_filterable": true,
+            "name": "owned_by_ids",
+            "oasis": {
+              "name": "owned_by_ids"
+            },
+            "ui": {
+              "display_name": "Owner"
+            }
+          },
+          "meerkat_schema": {
+            "sql_expression": "owned_by_id",
+            "type": "string"
+          },
+          "reference_name": "owned_by_ids"
+        }
+      ],
+      "measures": [
+        {
+          "devrev_schema": {
+            "data_name": "ticket_count",
+            "db_name": "ticket_count",
+            "field_type": "double",
+            "is_filterable": false,
+            "name": "ticket_count",
+            "oasis": {
+              "name": "ticket_count"
+            },
+            "ui": {
+              "display_name": "Ticket Count"
+            }
+          },
+          "meerkat_schema": {
+            "sql_expression": "count(distinct ticket)",
+            "type": "number"
+          },
+          "reference_name": "ticket_count"
+        }
+      ],
+      "oasis": {
+        "datasets": [
+          "devrev.dim_ticket"
+        ],
+        "sql_query": "SELECT t.id as ticket, t.state, t.object_type as type, t.owned_by_ids, UNNEST(t.owned_by_ids) as owned_by_id FROM devrev.dim_ticket t WHERE t.state !='closed'"
+      },
+      "reference_name": "dim_ticket",
+      "type": "oasis"
+    }
+  ],
+  "sub_widgets": [
+    {
+      "query": {
+        "dimensions": [
+          "dim_ticket.owned_by_ids"
+        ],
+        "measures": [
+          "dim_ticket.ticket_count"
+        ],
+        "order_by": [
+          {
+            "direction": "descending",
+            "reference_name": "dim_ticket.ticket_count"
+          }
+        ]
+      },
+      "reference_id": "widget1",
+      "visualization": {
+        "table": {
+          "columns": [
+            {
+              "label": "Agent",
+              "reference_name": "dim_ticket.owned_by_ids",
+              "order": "0"
+            },
+            {
+              "label": "Active Tickets",
+              "reference_name": "dim_ticket.ticket_count",
+              "order": "1"
+            }
+          ]
+        },
+        "type": "table"
+      }
+    }
+  ],
+  "layout": [
+    {
+      "position": {
+        "height": 2,
+        "width": 3,
+        "x": 0,
+        "y": 0
+      },
+      "reference_id": "widget1"
+    }
+  ],
+  "name": "tickets_by_owner"
+}

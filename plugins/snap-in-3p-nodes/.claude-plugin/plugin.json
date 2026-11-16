@@ -1,0 +1,10 @@
+{
+  "name": "snap-in-3p-nodes",
+  "version": "1.0.0",
+  "description": "Intelligent assistant for creating DevRev snap-in 3P nodes with automated research, code generation, and validation",
+  "author": {
+    "name": "Sammitha",
+    "email": "sammitha.poojary@devrev.ai"
+  },
+  "keywords": ["devrev", "snap-in", "3p-nodes", "workflow", "code-generation", "validation"]
+}

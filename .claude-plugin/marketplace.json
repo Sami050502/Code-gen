@@ -1,0 +1,35 @@
+{
+  "$schema": "https://anthropic.com/claude-code/marketplace.schema.json",
+  "name": "devrev-aai-plugins",
+  "description": "DevRev Applied AI plugins for dashboard development",
+  "owner": {
+    "name": "DevRev Applied AI Team",
+    "email": "support@devrev.com"
+  },
+  "plugins": [
+    {
+      "name": "dashboard-dev",
+      "description": "DevRev dashboard development plugin with workspace initialization, widget generation, and iterative validation",
+      "author": {
+        "name": "DevRev Applied AI Team",
+        "email": "support@devrev.com"
+      },
+      "source": "./plugins/dashboard-dev",
+      "category": "development",
+      "homepage": "https://github.com/devrev/aai-skills"
+    },
+    {
+      "name": "connector-review",
+      "description": "DevRev connector PR review validation with skills for manifest, config, and extraction phase validation",
+      "author": {
+        "name": "DevRev Applied AI Team",
+        "email": "support@devrev.com"
+      },
+      "source": "./plugins/connector-review",
+      "category": "development",
+      "version": "0.1.2",
+      "keywords": ["devrev", "connector", "validation", "review"],
+      "homepage": "https://github.com/devrev/aai-skills/tree/main/plugins/connector-review"
+    }
+  ]
+}

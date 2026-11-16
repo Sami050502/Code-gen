@@ -1,0 +1,212 @@
+# Widget Field Templates
+# STRUCTURE templates only - copy and fill in placeholders
+#
+# Type mappings: See validation-schema.yaml (devrev_to_meerkat section)
+# Validation rules: See validation-schema.yaml (constraints section)
+# Do NOT duplicate type information here - validation-schema.yaml is authoritative
+
+version: "1.0.0"
+
+# Dimension Templates
+dimensions:
+  # Standard dimension (enum, text fields)
+  standard:
+    description: "Basic filterable dimension"
+    template:
+      reference_name: "{{field_name}}"
+      devrev_schema:
+        name: "{{field_name}}"
+        data_name: "{{field_name}}"
+        db_name: "{{field_name}}"
+        field_type: "enum"  # or text, bool
+        is_filterable: true
+        oasis:
+          name: "{{field_name}}"
+        ui:
+          display_name: "{{Display Name}}"
+      meerkat_schema:
+        sql_expression: "{{field_name}}"
+        type: "string"
+
+  # Timestamp dimension (date/time fields)
+  timestamp:
+    description: "Date/time dimension with truncation"
+    notes: "Derived fields (DATE_TRUNC) should set is_filterable: false"
+    template:
+      reference_name: "{{field_name}}_day"
+      devrev_schema:
+        name: "{{field_name}}_day"
+        data_name: "{{field_name}}_day"
+        db_name: "{{field_name}}_day"
+        field_type: "timestamp"
+        is_filterable: false  # false for derived fields
+        oasis:
+          name: "{{field_name}}_day"
+        ui:
+          display_name: "{{Display Name}}"
+          unit: "MMM d"
+      meerkat_schema:
+        sql_expression: "DATE_TRUNC('day', {{field_name}})"
+        type: "time"
+
+  # ID dimension (references to other entities)
+  id:
+    description: "ID field with entity type for name resolution"
+    template:
+      reference_name: "{{field_name}}"
+      devrev_schema:
+        name: "{{field_name}}"
+        data_name: "{{field_name}}"
+        db_name: "{{field_name}}"
+        field_type: "id"
+        is_filterable: true
+        id_type: ["{{entity_type}}"]  # dev_user, account, work, etc.
+        oasis:
+          name: "{{field_name}}"
+        ui:
+          display_name: "{{Display Name}}"
+      meerkat_schema:
+        sql_expression: "{{sql_column}}"
+        type: "string"
+
+  # Array of IDs dimension
+  id_array:
+    description: "Array of ID references"
+    template:
+      reference_name: "{{field_name}}"
+      devrev_schema:
+        name: "{{field_name}}"
+        data_name: "{{field_name}}"
+        db_name: "{{field_name}}"
+        field_type: "array"
+        base_type: "id"
+        id_type: ["{{entity_type}}"]
+        is_filterable: true
+        oasis:
+          name: "{{field_name}}"
+        ui:
+          display_name: "{{Display Name}}"
+      meerkat_schema:
+        sql_expression: "{{field_name}}"
+        type: "string_array"
+
+# Measure Templates
+measures:
+  # Count measure
+  count:
+    description: "Count distinct records"
+    template:
+      reference_name: "{{measure_name}}"
+      devrev_schema:
+        name: "{{measure_name}}"
+        data_name: "{{measure_name}}"
+        db_name: "{{measure_name}}"
+        field_type: "int"
+        is_filterable: false
+        oasis:
+          name: "{{measure_name}}"
+        ui:
+          display_name: "{{Display Name}}"
+      meerkat_schema:
+        sql_expression: "COUNT(DISTINCT {{column}})"
+        type: "number"
+
+  # Sum measure
+  sum:
+    description: "Sum numeric values"
+    template:
+      reference_name: "{{measure_name}}"
+      devrev_schema:
+        name: "{{measure_name}}"
+        data_name: "{{measure_name}}"
+        db_name: "{{measure_name}}"
+        field_type: "double"
+        is_filterable: false
+        oasis:
+          name: "{{measure_name}}"
+        ui:
+          display_name: "{{Display Name}}"
+      meerkat_schema:
+        sql_expression: "SUM({{column}})"
+        type: "number"
+
+  # Average measure
+  average:
+    description: "Average numeric values"
+    template:
+      reference_name: "{{measure_name}}"
+      devrev_schema:
+        name: "{{measure_name}}"
+        data_name: "{{measure_name}}"
+        db_name: "{{measure_name}}"
+        field_type: "double"
+        is_filterable: false
+        oasis:
+          name: "{{measure_name}}"
+        ui:
+          display_name: "{{Display Name}}"
+      meerkat_schema:
+        sql_expression: "AVG({{column}})"
+        type: "number"
+
+  # Rolling average (window function)
+  rolling_average:
+    description: "Rolling average over N preceding rows"
+    notes: "Window functions must be in meerkat_schema, never in OASIS"
+    template:
+      reference_name: "{{measure_name}}"
+      devrev_schema:
+        name: "{{measure_name}}"
+        data_name: "{{measure_name}}"
+        db_name: "{{measure_name}}"
+        field_type: "double"
+        is_filterable: false
+        oasis:
+          name: "{{measure_name}}"
+        ui:
+          display_name: "{{Display Name}}"
+      meerkat_schema:
+        sql_expression: "AVG(COUNT(*)) OVER (ORDER BY {MEERKAT}.{{date_dimension}} ROWS BETWEEN {{N}} PRECEDING AND CURRENT ROW)"
+        type: "number"
+
+# ID Types Reference
+id_types:
+  dev_user: "DevRev internal users"
+  account: "Customer accounts"
+  work: "Work items (tickets, issues)"
+  rev_org: "Customer organizations"
+  rev_user: "Customer users"
+  group: "User groups"
+  part: "Product parts"
+  tag: "Tags"
+  ai_agent: "AI agents"
+  service_account: "Service accounts"
+  article: "Knowledge base articles"
+  conversation: "Conversations"
+
+# is_filterable Rules
+filterable_rules:
+  dimension_standard: true    # Direct column reference
+  dimension_derived: false    # Computed (DATE_TRUNC, CASE, etc.)
+  measure: false              # Always false for measures
+
+# Common Datasets
+datasets:
+  - name: "devrev.dim_ticket"
+    purpose: "Support tickets"
+  - name: "devrev.dim_issue"
+    purpose: "Engineering issues"
+  - name: "devrev.dim_conversation"
+    purpose: "Conversations"
+  - name: "devrev.dim_account"
+    purpose: "Customer accounts"
+  - name: "devrev.dim_devu"
+    purpose: "DevRev users (internal)"
+  - name: "devrev.dim_revu"
+    purpose: "Rev users (customers)"
+  - name: "devrev.dim_revo"
+    purpose: "Rev orgs"
+  - name: "devrev.dim_article"
+    purpose: "Knowledge base articles"
+  - name: "devrev.fact_engagement"
+    purpose: "Engagement events"

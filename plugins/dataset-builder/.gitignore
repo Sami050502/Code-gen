@@ -1,0 +1,26 @@
+# Environment files with secrets
+.env
+.env.*
+*.env
+
+# Plugin local settings
+.claude/*.local.md
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+venv/
+.venv/
+ENV/
+
+# Generated job files (before commit)
+*.generated.yaml
+*.generated.json
+
+# Temporary files
+*.tmp
+*.temp
+.DS_Store
